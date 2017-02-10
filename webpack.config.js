@@ -20,13 +20,13 @@ const config = require( './server/config' ),
 /**
  * Internal variables
  */
-const CALYPSO_ENV = process.env.CALYPSO_ENV || 'development';
+const calypsoEnv = config( 'env_id' );
 
 const bundleEnv = config( 'env' );
 const sectionCount = sections.length;
 
 const webpackConfig = {
-	bail: CALYPSO_ENV !== 'development',
+	bail: calypsoEnv !== 'development',
 	cache: true,
 	entry: {},
 	devtool: '#eval',
@@ -99,14 +99,14 @@ const webpackConfig = {
 	externals: [ 'electron' ]
 };
 
-if ( CALYPSO_ENV === 'desktop' ) {
+if ( calypsoEnv === 'desktop' ) {
 	// no chunks or dll here, just one big file for the desktop app
 	webpackConfig.output.filename = '[name].js';
 } else {
 	webpackConfig.plugins.push(
 		new webpack.DllReferencePlugin( {
 			context: path.join( __dirname, 'client' ),
-			manifest: require( './build/dll/vendor.' + bundleEnv + '-manifest.json' )
+			manifest: require( './build/dll/vendor-manifest.json' )
 		} )
 	);
 
@@ -165,11 +165,11 @@ const jsLoader = {
 	}
 };
 
-if ( CALYPSO_ENV === 'development' ) {
+if ( calypsoEnv === 'development' ) {
 	const DashboardPlugin = require( 'webpack-dashboard/plugin' );
 	webpackConfig.plugins.splice( 0, 0, new DashboardPlugin() );
 	webpackConfig.plugins.push( new webpack.HotModuleReplacementPlugin() );
-	webpackConfig.entry[ 'build-' + CALYPSO_ENV ] = [
+	webpackConfig.entry.build = [
 		'webpack-dev-server/client?/',
 		'webpack/hot/only-dev-server',
 		path.join( __dirname, 'client', 'boot' )
@@ -189,12 +189,12 @@ if ( CALYPSO_ENV === 'development' ) {
 		jsLoader.loaders = [ 'react-hot' ].concat( jsLoader.loaders );
 	}
 } else {
-	webpackConfig.entry[ 'build-' + CALYPSO_ENV ] = path.join( __dirname, 'client', 'boot' );
+	webpackConfig.entry.build = path.join( __dirname, 'client', 'boot' );
 	webpackConfig.debug = false;
 	webpackConfig.devtool = false;
 }
 
-if ( CALYPSO_ENV === 'production' ) {
+if ( calypsoEnv === 'production' ) {
 	webpackConfig.plugins.push( new webpack.NormalModuleReplacementPlugin(
 		/^debug$/,
 		path.join( __dirname, 'client', 'lib', 'debug-noop' )
