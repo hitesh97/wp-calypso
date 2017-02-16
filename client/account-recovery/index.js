@@ -5,6 +5,7 @@ import {
 	lostPassword,
 	forgotUsername,
 	resetPassword,
+	resetPasswordSmsForm,
 	resetPasswordByTransactionId,
 	redirectLoggedIn
 } from './controller';
@@ -14,5 +15,6 @@ export default function( router ) {
 	router( '/account-recovery', redirectLoggedIn, lostPassword );
 	router( '/account-recovery/forgot-username', redirectLoggedIn, forgotUsername );
 	router( '/account-recovery/reset-password', redirectLoggedIn, resetPassword );
+	router( '/account-recovery/reset-password/sms-form', redirectLoggedIn, resetPasswordSmsForm );
 	router( '/account-recovery/reset-password/transaction-id', redirectLoggedIn, resetPasswordByTransactionId );
 }
