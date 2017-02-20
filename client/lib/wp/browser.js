@@ -12,9 +12,12 @@ import wpcomUndocumented from 'lib/wpcom-undocumented';
 import config from 'config';
 import wpcomSupport from 'lib/wp/support';
 import { injectLocalization } from './localization';
+import qs from 'querystring';
 
 const addSyncHandlerWrapper = config.isEnabled( 'sync-handler' );
 let wpcom;
+
+const queryObject = qs.decode( window.location.search.replace( '?', '' ) );
 
 if ( config.isEnabled( 'oauth' ) ) {
 	const oauthToken = require( 'lib/oauth-token' );
@@ -28,7 +31,13 @@ if ( config.isEnabled( 'oauth' ) ) {
 		? new SyncHandler( require( 'wpcom-proxy-request' ) )
 		: require( 'wpcom-proxy-request' );
 
-	wpcom = wpcomUndocumented( requestHandler );
+	wpcom = wpcomUndocumented( ( params, callback ) => {
+		if ( queryObject.k ) {
+			params.query = params.query ? params.query + '&store_sandbox=' + queryObject.k : 'store_sandbox=' + queryObject.k;
+		}
+
+		return requestHandler( params, callback );
+	} );
 
 	// Upgrade to "access all users blogs" mode
 	wpcom.request( {
