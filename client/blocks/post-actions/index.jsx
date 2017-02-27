@@ -9,11 +9,10 @@ import { localize } from 'i18n-calypso';
  * Internal dependencies
  */
 import PostRelativeTimeStatus from 'my-sites/post-relative-time-status';
+import CommentButton from 'blocks/comment-button';
+import LikeButton from 'reader/like-button';
 import PostTotalViews from 'my-sites/posts/post-total-views';
-
 import utils from 'lib/posts/utils';
-
-
 
 // import { userCan } from 'lib/posts/utils';
 // import * as stats from 'reader/stats';
@@ -45,8 +44,29 @@ const PostActions = ( { className, post, site } ) => {
 					target={ contentLinkTarget }
 					onClick={ () => {} }/>
 			</li>
+			<li className="reader-post-actions__item">
+				<CommentButton
+					key="comment-button"
+					post={ post }
+					commentCount={ post.discussion.comment_count }
+					onClick={ () => {} }
+					tagName="div" />
+			</li>
+			<li className="reader-post-actions__item">
+				<LikeButton
+					key="like-button"
+					siteId={ +post.site_ID }
+					postId={ +post.ID }
+					post={ post }
+					site={ site }
+					tagName="div"
+					forceCounter={ true }
+					showZeroCount={ false } />
+			</li>
 			<li>
-				<PostTotalViews post={ post } clickHandler={ () => {} } />
+				<PostTotalViews
+					post={ post }
+					clickHandler={ () => {} } />
 			</li>
 		</ul>
 	);
