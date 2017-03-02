@@ -232,7 +232,7 @@ const CheckoutThankYou = React.createClass( {
 			);
 		}
 
-		if ( this.props.domainOnlySiteFlow && ! failedPurchases.length ) {
+		if ( this.props.domainOnlySiteFlow && purchases.length > 0 && ! failedPurchases.length ) {
 			const [ purchase, domainName ] = findPurchaseAndDomain( purchases, isDomainRegistration );
 
 			return (
