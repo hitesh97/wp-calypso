@@ -34,7 +34,7 @@ import { isTicketSupportEligible, isTicketSupportConfigurationReady, getTicketSu
 import QueryOlark from 'components/data/query-olark';
 import QueryTicketSupportConfiguration from 'components/data/query-ticket-support-configuration';
 import HelpUnverifiedWarning from '../help-unverified-warning';
-import { connectChat as connectHappychat, sendChatMessage as sendHappychatMessage } from 'state/happychat/actions';
+import { connectChat as connectHappychat, sendChatMessage as sendHappychatMessage, sendBrowserInfo } from 'state/happychat/actions';
 import { openChat as openHappychat } from 'state/ui/happychat/actions';
 import { getCurrentUserLocale } from 'state/current-user/selectors';
 
@@ -130,18 +130,8 @@ const HelpContact = React.createClass( {
 		const { message, siteId } = contactForm;
 		const site = sites.getSite( siteId );
 
-		const userAgent = `User Agent: ${ navigator.userAgent }`;
-		const screenRes = `Screen Resolution: ${ screen.width }x${ screen.height }\n`;
-		const browserSize = `Browser Size: ${ window.innerWidth }x${ window.innerHeight }\n`;
-		const browserInfoMsg = [ `Information to assist troubleshooting.\n ${ screenRes } ${ browserSize } ${ userAgent }` ];
-
-		let messages = browserInfoMsg.concat( message );
-
-		if ( site ) {
-			messages = [ `Site I need help with: ${ site.URL }` ].concat( messages );
-		}
-
-		messages.forEach( this.props.sendHappychatMessage );
+		this.props.sendBrowserInfo( site.URL );
+		this.props.sendHappychatMessage( message );
 
 		page( '/help' );
 	},
@@ -659,5 +649,5 @@ export default connect(
 			ticketSupportRequestError: getTicketSupportRequestError( state ),
 		};
 	},
-	{ connectHappychat, openHappychat, sendHappychatMessage }
+	{ connectHappychat, openHappychat, sendHappychatMessage, sendBrowserInfo }
 )( localize( HelpContact ) );
