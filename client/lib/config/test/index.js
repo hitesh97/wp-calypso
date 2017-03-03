@@ -12,10 +12,6 @@ describe( 'index', () => {
 	context( 'config without data', () => {
 		const config = createConfig( {} );
 
-		it( 'has to throw error when the provided key is undefined', () => {
-			expect( () => config( 'keyA' ) ).to.throw( Error );
-		} );
-
 		it( 'has to return false when the feature flags are not specified', () => {
 			const result = config.isEnabled( 'flagA' );
 
