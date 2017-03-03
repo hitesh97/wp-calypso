@@ -445,6 +445,9 @@ export function getThemeCustomizeUrl( state, themeId, siteId ) {
 		identifier = getSuffixedThemeId( state, themeId, siteId );
 	} else {
 		const theme = getTheme( state, 'wpcom', themeId );
+		if ( ! theme ) {
+			return customizerUrl;
+		}
 		identifier = theme.stylesheet;
 	}
 
